@@ -1,0 +1,100 @@
+import { NextResponse } from 'next/server';
+import { getDatabase } from '@/lib/sqlite';
+
+export async function GET() {
+  try {
+    const db = getDatabase();
+    const returns = db.prepare(`
+      SELECT * FROM sale_returns
+      ORDER BY created_at DESC
+    `).all();
+
+    return NextResponse.json({ returns });
+  } catch (error) {
+    console.error('Get sale returns error:', error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
+export async function POST(request) {
+  try {
+    const db = getDatabase();
+    const data = await request.json();
+
+    // Generate return_id if not provided
+    const timestamp = Date.now();
+    const return_id = data.return_id || `SRET-${timestamp}`;
+
+    // Start transaction
+    const insertReturn = db.prepare(`
+      INSERT INTO sale_returns (
+        return_id, return_date, return_time, original_sale_id, customer_name, return_reason,
+        total_return_amount, refund_amount, refund_method, status, processed_by, notes
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+
+    const insertReturnItem = db.prepare(`
+      INSERT INTO sale_return_items (
+        return_id, item_id, product_name, original_quantity, return_qty,
+        unit, unit_price, line_total, item_condition
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+
+    const updateProductStock = db.prepare(`
+      UPDATE products SET stock = stock + ? WHERE id = ?
+    `);
+
+    // Execute transaction
+    const transaction = db.transaction((returnData, items) => {
+      // Insert sale return
+      insertReturn.run(
+        return_id,
+        returnData.return_date,
+        returnData.return_time,
+        returnData.original_sale_id,
+        returnData.customer_name || '',
+        returnData.return_reason || '',
+        returnData.total_return_amount,
+        returnData.refund_amount,
+        returnData.refund_method || '',
+        returnData.status || 'Pending',
+        returnData.processed_by || 'Admin',
+        returnData.notes || ''
+      );
+
+      // Insert return items and update stock (increase stock as items are returned)
+      items.forEach(item => {
+        insertReturnItem.run(
+          return_id,
+          item.item_id,
+          item.product_name,
+          item.original_quantity,
+          item.return_qty,
+          item.unit,
+          item.unit_price,
+          item.line_total,
+          item.item_condition || 'Good'
+        );
+
+        // Increase stock for returned items
+        if (item.item_id) {
+          updateProductStock.run(item.return_qty, item.item_id);
+        }
+      });
+    });
+
+    transaction(data, data.items);
+
+    // Fetch the created return
+    const saleReturn = db.prepare('SELECT * FROM sale_returns WHERE return_id = ?').get(return_id);
+    const items = db.prepare('SELECT * FROM sale_return_items WHERE return_id = ?').all(return_id);
+
+    return NextResponse.json({
+      success: true,
+      return: { ...saleReturn, items }
+    });
+  } catch (error) {
+    console.error('Create sale return error:', error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}

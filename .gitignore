@@ -39,3 +39,18 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# sqlite database
+*.db
+inventory.db
+
+# electron
+/dist
+/release
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
