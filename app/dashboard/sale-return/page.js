@@ -266,58 +266,70 @@ export default function SaleReturnPage() {
   );
 
   return (
-    <div className="h-screen bg-white p-4 overflow-hidden">
-      <form onSubmit={handleSubmit} className="h-full max-w-[1800px] mx-auto flex flex-col">
+    <div className="h-[calc(100vh-1.75rem)] flex flex-col p-2 gap-2 overflow-hidden">
+      <form onSubmit={handleSubmit} className="flex-1 flex flex-col gap-2 min-h-0 max-w-[1800px] mx-auto w-full">
         {/* Header */}
-        <div className="flex items-center justify-between mb-3 shrink-0">
-          <div className="flex items-center gap-6">
-            <h1 className="text-xl font-bold text-gray-900">Sale Return Invoice</h1>
-            <div className="flex items-center gap-4 text-xs">
-              <span className="text-gray-600">Return #: <span className="font-medium text-blue-600">{returnId}</span></span>
-              <span className="text-gray-600">Date: <span className="font-medium text-gray-900">{returnDate}</span></span>
-              <span className="text-gray-600">Time: <span className="font-medium text-gray-900">{returnTime}</span></span>
-              <span className="flex items-center gap-1 text-green-600 font-medium">
-                <RotateCcw className="w-3.5 h-3.5" />
-                Added back to stock
-              </span>
-            </div>
+        <div className="flex items-center justify-between shrink-0">
+          <div>
+            <h1 className="text-sm font-bold text-neutral-900">Sale Return Invoice</h1>
+            <p className="text-[10px] text-neutral-500 mt-0.5">Process product returns and refunds</p>
           </div>
           <div className="flex items-center gap-2">
-            <button
-              type="button"
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
-            >
-              <Printer className="w-3.5 h-3.5" />
-              Print
-            </button>
-            <button
-              type="button"
-              onClick={handleReset}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
-            >
-              <X className="w-3.5 h-3.5" />
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={loading}
-              className="flex items-center gap-1.5 px-4 py-1.5 text-xs font-semibold text-white bg-black rounded-lg hover:bg-gray-800 disabled:opacity-50"
-            >
-              Process Return
-            </button>
+            <div className="flex items-center gap-2 px-2.5 py-1 bg-neutral-50 rounded-md border border-neutral-200">
+              <span className="text-[9px] text-neutral-500">Return #:</span>
+              <span className="text-[10px] font-semibold text-blue-600">{returnId}</span>
+            </div>
+            <div className="flex items-center gap-2 px-2.5 py-1 bg-neutral-50 rounded-md border border-neutral-200">
+              <span className="text-[9px] text-neutral-500">Date:</span>
+              <span className="text-[10px] font-medium text-neutral-900">{returnDate}</span>
+            </div>
+            <div className="flex items-center gap-2 px-2.5 py-1 bg-neutral-50 rounded-md border border-neutral-200">
+              <span className="text-[9px] text-neutral-500">Time:</span>
+              <span className="text-[10px] font-medium text-neutral-900">{returnTime}</span>
+            </div>
+            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 rounded-md border border-emerald-200">
+              <RotateCcw className="w-3 h-3 text-emerald-600" />
+              <span className="text-[10px] font-medium text-emerald-700">Stock Restored</span>
+            </div>
           </div>
         </div>
 
-        <div className="flex-1 grid grid-cols-12 gap-4 min-h-0">
+        <div className="flex items-center justify-end gap-1.5 shrink-0">
+          <button
+            type="button"
+            className="flex items-center gap-1 px-2.5 py-1.5 text-[10px] font-medium text-neutral-700 bg-white border border-neutral-300 rounded-md hover:bg-neutral-50 shadow-sm transition-colors"
+          >
+            <Printer className="w-3 h-3" />
+            Print
+          </button>
+          <button
+            type="button"
+            onClick={handleReset}
+            className="flex items-center gap-1 px-2.5 py-1.5 text-[10px] font-medium text-neutral-700 bg-white border border-neutral-300 rounded-md hover:bg-neutral-50 shadow-sm transition-colors"
+          >
+            <X className="w-3 h-3" />
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={loading}
+            className="flex items-center gap-1 px-3 py-1.5 text-[10px] font-semibold text-white bg-black rounded-md hover:bg-neutral-800 disabled:opacity-50 shadow-md transition-all"
+          >
+            Process Return
+          </button>
+        </div>
+
+        <div className="flex-1 grid grid-cols-12 gap-2 min-h-0">
           {/* Left Section - 9 columns */}
-          <div className="col-span-9 flex flex-col gap-3 min-h-0">
+          <div className="col-span-9 flex flex-col gap-2 min-h-0">
             {/* Top Form Fields */}
-            <div className="bg-white border border-gray-200 rounded-lg p-3 shrink-0">
-              <div className="grid grid-cols-4 gap-3">
+            <div className="bg-white border border-neutral-200 rounded-lg p-2.5 shrink-0 shadow-sm">
+              <h3 className="text-[10px] font-bold text-neutral-900 mb-2 pb-1.5 border-b border-neutral-200 uppercase tracking-wide">Invoice Details</h3>
+              <div className="grid grid-cols-4 gap-2">
                 <div className="relative">
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Original Sale Invoice *</label>
+                  <label className="block text-[9px] font-semibold text-neutral-700 mb-1">Original Sale Invoice *</label>
                   <div className="relative">
-                    <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
+                    <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400" />
                     <input
                       type="text"
                       value={saleSearchTerm}
@@ -327,25 +339,25 @@ export default function SaleReturnPage() {
                       }}
                       onFocus={() => setShowSaleSearch(saleSearchTerm.length > 0)}
                       placeholder="Search invoice..."
-                      className="w-full pl-8 pr-2 py-1.5 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                      className="w-full pl-8 pr-2 py-1.5 text-[10px] border border-neutral-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black/10 focus:border-black transition-all bg-white"
                     />
                   </div>
 
                   {showSaleSearch && filteredSales.length > 0 && (
-                    <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                    <div className="absolute z-10 w-full mt-1 bg-white border border-neutral-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
                       {filteredSales.map(sale => (
                         <button
                           key={sale.id}
                           type="button"
                           onClick={() => handleSaleSelect(sale)}
-                          className="w-full px-4 py-2.5 text-left hover:bg-gray-50 border-b border-gray-100 last:border-0"
+                          className="w-full px-3 py-2 text-left hover:bg-neutral-50 border-b border-neutral-100 last:border-0 transition-colors"
                         >
                           <div className="flex justify-between items-center">
                             <div>
-                              <p className="text-sm font-medium text-gray-900">{sale.sale_id}</p>
-                              <p className="text-xs text-gray-500">{sale.sale_date}</p>
+                              <p className="text-[10px] font-semibold text-neutral-900">{sale.sale_id}</p>
+                              <p className="text-[9px] text-neutral-500">{sale.sale_date}</p>
                             </div>
-                            <p className="text-sm font-semibold">Rs {sale.grand_total}</p>
+                            <p className="text-[10px] font-bold text-neutral-900">Rs {sale.grand_total}</p>
                           </div>
                         </button>
                       ))}
@@ -354,56 +366,56 @@ export default function SaleReturnPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Customer Name</label>
+                  <label className="block text-[9px] font-semibold text-neutral-700 mb-1">Customer Name</label>
                   <div className="relative">
-                    <User className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
+                    <User className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400" />
                     <input
                       type="text"
                       value={customerName}
                       onChange={(e) => setCustomerName(e.target.value)}
                       placeholder="Customer name"
-                      className="w-full pl-8 pr-2 py-1.5 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                      className="w-full pl-8 pr-2 py-1.5 text-[10px] border border-neutral-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black/10 focus:border-black transition-all bg-white"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Contact</label>
+                  <label className="block text-[9px] font-semibold text-neutral-700 mb-1">Contact</label>
                   <input
                     type="text"
                     value={contact}
                     onChange={(e) => setContact(e.target.value)}
                     placeholder="Phone number"
-                    className="w-full px-2 py-1.5 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                    className="w-full px-2 py-1.5 text-[10px] border border-neutral-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black/10 focus:border-black transition-all bg-white"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Created By</label>
+                  <label className="block text-[9px] font-semibold text-neutral-700 mb-1">Created By</label>
                   <input
                     type="text"
                     value={createdBy}
                     onChange={(e) => setCreatedBy(e.target.value)}
                     placeholder="Staff name"
-                    className="w-full px-2 py-1.5 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                    className="w-full px-2 py-1.5 text-[10px] border border-neutral-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black/10 focus:border-black transition-all bg-white"
                   />
                 </div>
               </div>
             </div>
 
             {/* Return Items */}
-            <div className="bg-white border border-gray-200 rounded-lg flex-1 flex flex-col min-h-0">
-              <div className="px-3 py-2 border-b border-gray-200 flex items-center justify-between shrink-0">
+            <div className="bg-white border border-neutral-200 rounded-lg flex-1 flex flex-col min-h-0 shadow-sm">
+              <div className="px-2.5 py-2 border-b border-neutral-200 flex items-center justify-between shrink-0 bg-neutral-50">
                 <div className="flex items-center gap-2">
-                  <div className="w-5 h-5 bg-gray-100 rounded flex items-center justify-center">
-                    <span className="text-gray-700 font-semibold text-[10px]">{items.length}</span>
+                  <div className="w-5 h-5 bg-neutral-200 rounded flex items-center justify-center">
+                    <span className="text-neutral-700 font-bold text-[9px]">{items.length}</span>
                   </div>
-                  <h3 className="text-xs font-semibold text-gray-900">Return Items</h3>
+                  <h3 className="text-[10px] font-bold text-neutral-900 uppercase tracking-wide">Return Items</h3>
                 </div>
                 <button
                   type="button"
                   onClick={addItem}
-                  className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 font-medium"
+                  className="flex items-center gap-1 text-[10px] text-blue-600 hover:text-blue-700 font-semibold transition-colors"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   Add Item
@@ -411,98 +423,98 @@ export default function SaleReturnPage() {
               </div>
 
               <div className="flex-1 overflow-auto">
-                <table className="w-full text-xs">
-                  <thead className="bg-gray-50 sticky top-0">
+                <table className="w-full text-[10px]">
+                  <thead className="bg-gradient-to-r from-neutral-50 to-neutral-100 border-b-2 border-neutral-200 sticky top-0">
                     <tr>
-                      <th className="px-2 py-1.5 text-left text-[10px] font-semibold text-gray-600 uppercase">#</th>
-                      <th className="px-2 py-1.5 text-left text-[10px] font-semibold text-gray-600 uppercase">Product</th>
-                      <th className="px-2 py-1.5 text-left text-[10px] font-semibold text-gray-600 uppercase">SKU</th>
-                      <th className="px-2 py-1.5 text-left text-[10px] font-semibold text-gray-600 uppercase">Company</th>
-                      <th className="px-2 py-1.5 text-left text-[10px] font-semibold text-gray-600 uppercase">Batch</th>
-                      <th className="px-2 py-1.5 text-left text-[10px] font-semibold text-gray-600 uppercase">Expiry</th>
-                      <th className="px-2 py-1.5 text-left text-[10px] font-semibold text-gray-600 uppercase">QTY</th>
-                      <th className="px-2 py-1.5 text-left text-[10px] font-semibold text-gray-600 uppercase">Price</th>
-                      <th className="px-2 py-1.5 text-left text-[10px] font-semibold text-gray-600 uppercase">Subtotal</th>
-                      <th className="px-2 py-1.5 text-left text-[10px] font-semibold text-gray-600 uppercase">Reason</th>
-                      <th className="px-2 py-1.5 text-center text-[10px] font-semibold text-gray-600 uppercase"></th>
+                      <th className="px-2 py-2 text-left text-[9px] font-bold text-neutral-700 uppercase tracking-wide">#</th>
+                      <th className="px-2 py-2 text-left text-[9px] font-bold text-neutral-700 uppercase tracking-wide">Product</th>
+                      <th className="px-2 py-2 text-left text-[9px] font-bold text-neutral-700 uppercase tracking-wide">SKU</th>
+                      <th className="px-2 py-2 text-left text-[9px] font-bold text-neutral-700 uppercase tracking-wide">Company</th>
+                      <th className="px-2 py-2 text-left text-[9px] font-bold text-neutral-700 uppercase tracking-wide">Batch</th>
+                      <th className="px-2 py-2 text-left text-[9px] font-bold text-neutral-700 uppercase tracking-wide">Expiry</th>
+                      <th className="px-2 py-2 text-left text-[9px] font-bold text-neutral-700 uppercase tracking-wide">QTY</th>
+                      <th className="px-2 py-2 text-left text-[9px] font-bold text-neutral-700 uppercase tracking-wide">Price</th>
+                      <th className="px-2 py-2 text-left text-[9px] font-bold text-neutral-700 uppercase tracking-wide">Subtotal</th>
+                      <th className="px-2 py-2 text-left text-[9px] font-bold text-neutral-700 uppercase tracking-wide">Reason</th>
+                      <th className="px-2 py-2 text-center text-[9px] font-bold text-neutral-700 uppercase tracking-wide"></th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-200 bg-white">
+                  <tbody className="divide-y divide-neutral-100 bg-white">
                     {items.map((item, index) => (
-                      <tr key={item.id} className="hover:bg-gray-50">
-                        <td className="px-2 py-1.5 text-xs text-gray-900">{index + 1}</td>
-                        <td className="px-2 py-1.5">
+                      <tr key={item.id} className="hover:bg-neutral-50/50 transition-colors">
+                        <td className="px-2 py-2 text-[10px] text-neutral-900 font-medium">{index + 1}</td>
+                        <td className="px-2 py-2">
                           <input
                             type="text"
                             value={item.product_name}
                             onChange={(e) => updateItem(index, 'product_name', e.target.value)}
                             placeholder="Product..."
-                            className="w-full px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+                            className="w-full px-2 py-1 text-[10px] border border-neutral-300 rounded focus:outline-none focus:ring-1 focus:ring-black/10 bg-white"
                           />
                         </td>
-                        <td className="px-2 py-1.5">
+                        <td className="px-2 py-2">
                           <input
                             type="text"
                             value={item.sku}
                             onChange={(e) => updateItem(index, 'sku', e.target.value)}
                             placeholder="SKU"
-                            className="w-full px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+                            className="w-full px-2 py-1 text-[10px] border border-neutral-300 rounded focus:outline-none focus:ring-1 focus:ring-black/10 bg-white"
                           />
                         </td>
-                        <td className="px-2 py-1.5">
+                        <td className="px-2 py-2">
                           <input
                             type="text"
                             value={item.company}
                             onChange={(e) => updateItem(index, 'company', e.target.value)}
                             placeholder="Company"
-                            className="w-full px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+                            className="w-full px-2 py-1 text-[10px] border border-neutral-300 rounded focus:outline-none focus:ring-1 focus:ring-black/10 bg-white"
                           />
                         </td>
-                        <td className="px-2 py-1.5">
+                        <td className="px-2 py-2">
                           <input
                             type="text"
                             value={item.batch}
                             onChange={(e) => updateItem(index, 'batch', e.target.value)}
                             placeholder="Batch"
-                            className="w-full px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+                            className="w-full px-2 py-1 text-[10px] border border-neutral-300 rounded focus:outline-none focus:ring-1 focus:ring-black/10 bg-white"
                           />
                         </td>
-                        <td className="px-2 py-1.5">
+                        <td className="px-2 py-2">
                           <input
                             type="text"
                             value={item.expiry}
                             onChange={(e) => updateItem(index, 'expiry', e.target.value)}
                             placeholder="mm/dd/yyyy"
-                            className="w-full px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+                            className="w-full px-2 py-1 text-[10px] border border-neutral-300 rounded focus:outline-none focus:ring-1 focus:ring-black/10 bg-white"
                           />
                         </td>
-                        <td className="px-2 py-1.5">
+                        <td className="px-2 py-2">
                           <input
                             type="number"
                             value={item.return_qty}
                             onChange={(e) => updateItem(index, 'return_qty', e.target.value)}
                             min="0"
-                            className="w-14 px-2 py-1 text-xs text-center border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+                            className="w-14 px-2 py-1 text-[10px] text-center border border-neutral-300 rounded focus:outline-none focus:ring-1 focus:ring-black/10 bg-white font-medium"
                           />
                         </td>
-                        <td className="px-2 py-1.5">
+                        <td className="px-2 py-2">
                           <input
                             type="number"
                             value={item.price}
                             onChange={(e) => updateItem(index, 'price', e.target.value)}
                             min="0"
                             step="0.01"
-                            className="w-16 px-2 py-1 text-xs text-center border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+                            className="w-16 px-2 py-1 text-[10px] text-center border border-neutral-300 rounded focus:outline-none focus:ring-1 focus:ring-black/10 bg-white font-medium"
                           />
                         </td>
-                        <td className="px-2 py-1.5 text-xs font-semibold text-gray-900">
+                        <td className="px-2 py-2 text-[10px] font-bold text-neutral-900">
                           Rs.{item.subtotal.toFixed(0)}
                         </td>
-                        <td className="px-2 py-1.5">
+                        <td className="px-2 py-2">
                           <select
                             value={item.reason}
                             onChange={(e) => updateItem(index, 'reason', e.target.value)}
-                            className="w-full px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+                            className="w-full px-2 py-1 text-[10px] border border-neutral-300 rounded focus:outline-none focus:ring-1 focus:ring-black/10 bg-white"
                           >
                             <option value="">Select</option>
                             <option value="Damaged">Damaged</option>
@@ -512,11 +524,11 @@ export default function SaleReturnPage() {
                             <option value="Other">Other</option>
                           </select>
                         </td>
-                        <td className="px-2 py-1.5 text-center">
+                        <td className="px-2 py-2 text-center">
                           <button
                             type="button"
                             onClick={() => removeItem(index)}
-                            className="p-0.5 text-red-600 hover:bg-red-50 rounded"
+                            className="p-0.5 text-red-600 hover:bg-red-50 rounded transition-colors"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -529,14 +541,15 @@ export default function SaleReturnPage() {
             </div>
 
             {/* Bottom Form Fields */}
-            <div className="bg-white border border-gray-200 rounded-lg p-3 shrink-0">
-              <div className="grid grid-cols-3 gap-3">
+            <div className="bg-white border border-neutral-200 rounded-lg p-2.5 shrink-0 shadow-sm">
+              <h3 className="text-[10px] font-bold text-neutral-900 mb-2 pb-1.5 border-b border-neutral-200 uppercase tracking-wide">Additional Information</h3>
+              <div className="grid grid-cols-3 gap-2">
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Return Reason</label>
+                  <label className="block text-[9px] font-semibold text-neutral-700 mb-1">Return Reason</label>
                   <select
                     value={returnReason}
                     onChange={(e) => setReturnReason(e.target.value)}
-                    className="w-full px-2 py-1.5 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                    className="w-full px-2 py-1.5 text-[10px] border border-neutral-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black/10 focus:border-black transition-all bg-white"
                   >
                     <option value="">Select reason</option>
                     <option value="Damaged">Damaged</option>
@@ -549,11 +562,11 @@ export default function SaleReturnPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Stock Adjustment</label>
+                  <label className="block text-[9px] font-semibold text-neutral-700 mb-1">Stock Adjustment</label>
                   <select
                     value={stockAdjustment}
                     onChange={(e) => setStockAdjustment(e.target.value)}
-                    className="w-full px-2 py-1.5 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                    className="w-full px-2 py-1.5 text-[10px] border border-neutral-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black/10 focus:border-black transition-all bg-white"
                   >
                     <option value="Added back to stock">Added back to stock</option>
                     <option value="Damaged - Not returned">Damaged - Not returned</option>
@@ -562,13 +575,13 @@ export default function SaleReturnPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Notes</label>
+                  <label className="block text-[9px] font-semibold text-neutral-700 mb-1">Notes</label>
                   <input
                     type="text"
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                     placeholder="Additional notes..."
-                    className="w-full px-2 py-1.5 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                    className="w-full px-2 py-1.5 text-[10px] border border-neutral-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black/10 focus:border-black transition-all bg-white"
                   />
                 </div>
               </div>
@@ -576,18 +589,18 @@ export default function SaleReturnPage() {
           </div>
 
           {/* Right Section - 3 columns */}
-          <div className="col-span-3 flex flex-col gap-2 min-h-0 overflow-y-auto pb-2">
+          <div className="col-span-3 flex flex-col gap-2 min-h-0 overflow-y-auto">
             {/* Refund Calculations */}
-            <div className="bg-white border border-gray-200 rounded-lg p-2 shrink-0">
-              <h3 className="text-xs font-semibold text-gray-900 mb-1.5">Refund Calculations</h3>
+            <div className="bg-white border border-neutral-200 rounded-lg p-2.5 shrink-0 shadow-sm">
+              <h3 className="text-[10px] font-bold text-neutral-900 mb-2 pb-1.5 border-b border-neutral-200 uppercase tracking-wide">Refund Calculations</h3>
               <div className="space-y-1.5">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-600">Subtotal</span>
-                  <span className="font-semibold">Rs.{totals.subtotal}</span>
+                <div className="flex items-center justify-between text-[10px]">
+                  <span className="text-neutral-600 font-medium">Subtotal</span>
+                  <span className="font-bold text-neutral-900">Rs.{totals.subtotal}</span>
                 </div>
 
-                <div className="flex items-center justify-between gap-2 text-xs">
-                  <span className="text-gray-600">Discount %</span>
+                <div className="flex items-center justify-between gap-2 text-[10px]">
+                  <span className="text-neutral-600 font-medium">Discount %</span>
                   <input
                     type="number"
                     value={discountPercent}
@@ -595,12 +608,12 @@ export default function SaleReturnPage() {
                     min="0"
                     max="100"
                     step="0.01"
-                    className="w-14 px-2 py-1 text-xs text-right border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                    className="w-16 px-2 py-1 text-[10px] text-right border border-neutral-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black/10 bg-white font-medium"
                   />
                 </div>
 
-                <div className="flex items-center justify-between gap-2 text-xs">
-                  <span className="text-gray-600">Tax %</span>
+                <div className="flex items-center justify-between gap-2 text-[10px]">
+                  <span className="text-neutral-600 font-medium">Tax %</span>
                   <input
                     type="number"
                     value={taxPercent}
@@ -608,45 +621,45 @@ export default function SaleReturnPage() {
                     min="0"
                     max="100"
                     step="0.01"
-                    className="w-14 px-2 py-1 text-xs text-right border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                    className="w-16 px-2 py-1 text-[10px] text-right border border-neutral-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black/10 bg-white font-medium"
                   />
                 </div>
 
-                <div className="flex items-center justify-between gap-2 text-xs">
-                  <span className="text-gray-600">Deduction</span>
+                <div className="flex items-center justify-between gap-2 text-[10px]">
+                  <span className="text-neutral-600 font-medium">Deduction</span>
                   <input
                     type="number"
                     value={deduction}
                     onChange={(e) => setDeduction(e.target.value)}
                     min="0"
                     step="0.01"
-                    className="w-14 px-2 py-1 text-xs text-right border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                    className="w-16 px-2 py-1 text-[10px] text-right border border-neutral-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black/10 bg-white font-medium"
                   />
                 </div>
 
-                <div className="flex items-center justify-between gap-2 text-xs">
-                  <span className="text-gray-600">Round Off</span>
+                <div className="flex items-center justify-between gap-2 text-[10px]">
+                  <span className="text-neutral-600 font-medium">Round Off</span>
                   <input
                     type="number"
                     value={roundOff}
                     onChange={(e) => setRoundOff(e.target.value)}
                     step="0.01"
-                    className="w-14 px-2 py-1 text-xs text-right border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                    className="w-16 px-2 py-1 text-[10px] text-right border border-neutral-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black/10 bg-white font-medium"
                   />
                 </div>
               </div>
             </div>
 
             {/* Refund Details */}
-            <div className="bg-white border border-gray-200 rounded-lg p-2 shrink-0">
-              <h3 className="text-xs font-semibold text-gray-900 mb-1.5">Refund Details</h3>
-              <div className="space-y-1.5">
+            <div className="bg-white border border-neutral-200 rounded-lg p-2.5 shrink-0 shadow-sm">
+              <h3 className="text-[10px] font-bold text-neutral-900 mb-2 pb-1.5 border-b border-neutral-200 uppercase tracking-wide">Refund Details</h3>
+              <div className="space-y-2">
                 <div>
-                  <label className="block text-[10px] text-gray-600 mb-1">Method</label>
+                  <label className="block text-[9px] font-semibold text-neutral-700 mb-1">Method</label>
                   <select
                     value={refundMethod}
                     onChange={(e) => setRefundMethod(e.target.value)}
-                    className="w-full px-2 py-1 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                    className="w-full px-2 py-1.5 text-[10px] border border-neutral-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black/10 bg-white"
                   >
                     <option value="Cash">Cash</option>
                     <option value="Card">Card</option>
@@ -656,21 +669,21 @@ export default function SaleReturnPage() {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] text-gray-600 mb-1">Amount</label>
+                  <label className="block text-[9px] font-semibold text-neutral-700 mb-1">Amount</label>
                   <input
                     type="text"
                     value={`Rs.${totals.refundTotal}`}
                     readOnly
-                    className="w-full px-2 py-1 text-xs bg-gray-50 border border-gray-300 rounded-lg font-semibold"
+                    className="w-full px-2 py-1.5 text-[10px] bg-neutral-50 border border-neutral-300 rounded-md font-bold text-neutral-900"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[10px] text-gray-600 mb-1">Status</label>
+                  <label className="block text-[9px] font-semibold text-neutral-700 mb-1">Status</label>
                   <select
                     value={status}
                     onChange={(e) => setStatus(e.target.value)}
-                    className="w-full px-2 py-1 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                    className="w-full px-2 py-1.5 text-[10px] border border-neutral-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black/10 bg-white"
                   >
                     <option value="Pending">Pending</option>
                     <option value="Approved">Approved</option>
@@ -682,32 +695,32 @@ export default function SaleReturnPage() {
             </div>
 
             {/* Total Summary */}
-            <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-black rounded-lg p-2 text-white shrink-0">
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-[10px] font-medium text-gray-400 uppercase">Subtotal</span>
-                <span className="text-xs font-bold">Rs.{totals.subtotal}</span>
+            <div className="bg-gradient-to-br from-neutral-900 via-neutral-800 to-black rounded-lg p-2.5 text-white shrink-0 shadow-lg">
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-[9px] font-semibold text-neutral-400 uppercase tracking-wide">Subtotal</span>
+                <span className="text-[10px] font-bold">Rs.{totals.subtotal}</span>
               </div>
-              <div className="border-t border-gray-700 pt-1">
+              <div className="border-t border-neutral-700 pt-1.5">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-medium text-gray-400 uppercase">Refund Total</span>
+                  <span className="text-[9px] font-semibold text-neutral-400 uppercase tracking-wide">Refund Total</span>
                   <span className="text-base font-bold text-blue-400">Rs.{totals.refundTotal}</span>
                 </div>
               </div>
             </div>
 
             {/* Process Refund Button */}
-            <div className="flex items-center gap-2 shrink-0 sticky bottom-0 bg-white pt-2">
+            <div className="flex items-center gap-2 shrink-0">
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-[10px] font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50 shadow-md transition-all"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 Process Refund
               </button>
               <button
                 type="button"
-                className="p-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+                className="p-2 text-neutral-700 bg-white border border-neutral-300 rounded-md hover:bg-neutral-50 shadow-sm transition-colors"
               >
                 <Printer className="w-3.5 h-3.5" />
               </button>

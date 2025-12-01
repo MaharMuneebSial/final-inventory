@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu } = require('electron');
 const path = require('path');
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -19,7 +19,11 @@ function createWindow() {
     backgroundColor: '#fafafa',
     titleBarStyle: 'default',
     show: false,
+    autoHideMenuBar: true, // Hide menu bar
   });
+
+  // Remove the menu bar completely
+  Menu.setApplicationMenu(null);
 
   // Show window when ready
   mainWindow.once('ready-to-show', () => {

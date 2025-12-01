@@ -24,16 +24,24 @@ export default function NewProductPage() {
   });
 
   const [categories, setCategories] = useState([]);
+  const [subcategories, setSubcategories] = useState([]);
   const [brands, setBrands] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
   const [errors, setErrors] = useState({});
   const [showNewCategoryModal, setShowNewCategoryModal] = useState(false);
+  const [showNewSubcategoryModal, setShowNewSubcategoryModal] = useState(false);
   const [showNewBrandModal, setShowNewBrandModal] = useState(false);
   const [showNewSupplierModal, setShowNewSupplierModal] = useState(false);
   const [newItemName, setNewItemName] = useState('');
   const [newSupplierContact, setNewSupplierContact] = useState('');
+  const [showBarcodeScanner, setShowBarcodeScanner] = useState(false);
+  const barcodeInputRef = useRef(null);
+  const [selectedSubcategoryParent, setSelectedSubcategoryParent] = useState('');
+  const [isCreatingBrand, setIsCreatingBrand] = useState(false);
+  const [isCreatingCategory, setIsCreatingCategory] = useState(false);
+  const [isCreatingSubcategory, setIsCreatingSubcategory] = useState(false);
 
   useEffect(() => {
     fetchDropdownData();
@@ -102,6 +110,27 @@ export default function NewProductPage() {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     validateField(name, value);
+
+    // If category changes, fetch subcategories and reset sub_category
+    if (name === 'category') {
+      setFormData(prev => ({ ...prev, sub_category: '' }));
+      if (value) {
+        fetchSubcategories(value);
+      } else {
+        setSubcategories([]);
+      }
+    }
+  };
+
+  const fetchSubcategories = async (categoryName) => {
+    try {
+      const response = await fetch(`/api/subcategories?category=${encodeURIComponent(categoryName)}`);
+      const data = await response.json();
+      setSubcategories(data.subcategories || []);
+    } catch (error) {
+      console.error('Failed to fetch subcategories:', error);
+      setSubcategories([]);
+    }
   };
 
   const handleImageUpload = (e) => {
@@ -126,6 +155,14 @@ export default function NewProductPage() {
     setFormData(prev => ({ ...prev, sku: `PRD${timestamp}` }));
   };
 
+  const handleBarcodeScanner = () => {
+    setShowBarcodeScanner(true);
+    // Focus on barcode input after a short delay to ensure modal is rendered
+    setTimeout(() => {
+      barcodeInputRef.current?.focus();
+    }, 100);
+  };
+
   const handleCreateCategory = async () => {
     const trimmedName = newItemName.trim();
 
@@ -134,7 +171,8 @@ export default function NewProductPage() {
       return;
     }
 
-    console.log('Creating category:', trimmedName);
+    setIsCreatingCategory(true);
+    console.log('[Category] Creating category:', trimmedName);
 
     try {
       const response = await fetch('/api/categories', {
@@ -143,31 +181,63 @@ export default function NewProductPage() {
         body: JSON.stringify({ name: trimmedName })
       });
 
-      console.log('Response status:', response.status);
+      console.log('[Category] Response status:', response.status);
       const data = await response.json();
-      console.log('Response data:', data);
+      console.log('[Category] Response data:', data);
 
       if (response.ok && data.category) {
-        console.log('Category created successfully:', data.category);
+        console.log('[Category] Category created successfully:', data.category);
+
+        // Update categories list
         setCategories(prev => {
           const updated = [...prev, data.category];
-          console.log('Updated categories:', updated);
+          console.log('[Category] Updated categories:', updated);
           return updated;
         });
+
+        // Set the newly created category as selected
         setFormData(prev => ({ ...prev, category: data.category.name }));
+
+        // Close modal and reset
         setShowNewCategoryModal(false);
         setNewItemName('');
-        alert('Category added successfully!');
+
+        console.log('[Category] Category added successfully, modal should close now');
+
+        // Show success message
+        setTimeout(() => {
+          alert('✅ Category "' + data.category.name + '" added successfully!\n\nCheck the Category dropdown!');
+        }, 100);
 
         // Refetch categories to ensure sync
         await fetchDropdownData();
       } else {
-        console.error('Failed to create category:', data);
-        alert(`Failed to create category: ${data.error || 'Unknown error'}`);
+        console.error('[Category] Failed to create category:', data);
+        console.error('[Category] Response status was:', response.status);
+
+        // Check for duplicate error
+        let errorMessage = data.error || '';
+
+        // If error message is empty, check if it's a 500 error (likely UNIQUE constraint)
+        if (!errorMessage && response.status === 500) {
+          errorMessage = 'UNIQUE constraint failed';
+        }
+
+        if (!errorMessage) {
+          errorMessage = 'Unknown error';
+        }
+
+        if (errorMessage.includes('UNIQUE constraint') || errorMessage.includes('already exists')) {
+          alert('❌ This category already exists!\n\nPlease use a different category name or select the existing category from the dropdown.');
+        } else {
+          alert('❌ Failed to create category: ' + errorMessage);
+        }
       }
     } catch (error) {
-      console.error('Exception creating category:', error);
-      alert('Failed to create category: ' + error.message);
+      console.error('[Category] Exception creating category:', error);
+      alert('❌ Failed to create category: ' + error.message);
+    } finally {
+      setIsCreatingCategory(false);
     }
   };
 
@@ -179,7 +249,8 @@ export default function NewProductPage() {
       return;
     }
 
-    console.log('Creating brand:', trimmedName);
+    setIsCreatingBrand(true);
+    console.log('[Brand] Creating brand:', trimmedName);
 
     try {
       const response = await fetch('/api/brands', {
@@ -188,31 +259,147 @@ export default function NewProductPage() {
         body: JSON.stringify({ name: trimmedName })
       });
 
-      console.log('Response status:', response.status);
+      console.log('[Brand] Response status:', response.status);
       const data = await response.json();
-      console.log('Response data:', data);
+      console.log('[Brand] Response data:', data);
 
       if (response.ok && data.brand) {
-        console.log('Brand created successfully:', data.brand);
+        console.log('[Brand] Brand created successfully:', data.brand);
+
+        // Update brands list
         setBrands(prev => {
           const updated = [...prev, data.brand];
-          console.log('Updated brands:', updated);
+          console.log('[Brand] Updated brands list:', updated);
           return updated;
         });
-        setFormData(prev => ({ ...prev, brand: data.brand.name }));
+
+        // Set the newly created brand as selected
+        setFormData(prev => {
+          const newData = { ...prev, brand: data.brand.name };
+          console.log('[Brand] Updated form data:', newData);
+          return newData;
+        });
+
+        // Close modal and reset
         setShowNewBrandModal(false);
         setNewItemName('');
-        alert('Brand added successfully!');
+
+        console.log('[Brand] Brand added successfully, modal should close now');
+
+        // Show success message
+        setTimeout(() => {
+          alert('✅ Brand "' + data.brand.name + '" added successfully!\n\nCheck the Brand dropdown - your brand is now there!');
+        }, 100);
 
         // Refetch brands to ensure sync
         await fetchDropdownData();
       } else {
-        console.error('Failed to create brand:', data);
-        alert(`Failed to create brand: ${data.error || 'Unknown error'}`);
+        console.error('[Brand] Failed to create brand:', data);
+        console.error('[Brand] Response status was:', response.status);
+
+        // Check for duplicate error
+        let errorMessage = data.error || '';
+
+        // If error message is empty, check if it's a 500 error (likely UNIQUE constraint)
+        if (!errorMessage && response.status === 500) {
+          errorMessage = 'UNIQUE constraint failed';
+        }
+
+        if (!errorMessage) {
+          errorMessage = 'Unknown error';
+        }
+
+        if (errorMessage.includes('UNIQUE constraint') || errorMessage.includes('already exists')) {
+          alert('❌ This brand already exists!\n\nPlease use a different brand name or select the existing brand from the dropdown.');
+        } else {
+          alert('❌ Failed to create brand: ' + errorMessage);
+        }
       }
     } catch (error) {
-      console.error('Exception creating brand:', error);
-      alert('Failed to create brand: ' + error.message);
+      console.error('[Brand] Exception creating brand:', error);
+      alert('❌ Failed to create brand: ' + error.message);
+    } finally {
+      setIsCreatingBrand(false);
+    }
+  };
+
+  const handleCreateSubcategory = async () => {
+    const trimmedName = newItemName.trim();
+
+    if (!trimmedName) {
+      alert('Subcategory name is required');
+      return;
+    }
+
+    if (!selectedSubcategoryParent) {
+      alert('Please select a category first');
+      return;
+    }
+
+    setIsCreatingSubcategory(true);
+    console.log('[Subcategory] Creating subcategory:', trimmedName, 'under category:', selectedSubcategoryParent);
+
+    try {
+      const response = await fetch('/api/subcategories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: trimmedName, categoryName: selectedSubcategoryParent })
+      });
+
+      console.log('[Subcategory] Response status:', response.status);
+      const data = await response.json();
+      console.log('[Subcategory] Response data:', data);
+
+      if (response.ok && data.subcategory) {
+        console.log('[Subcategory] Subcategory created successfully:', data.subcategory);
+
+        // Update subcategories list
+        setSubcategories(prev => {
+          const updated = [...prev, data.subcategory];
+          console.log('[Subcategory] Updated subcategories:', updated);
+          return updated;
+        });
+
+        // Set the newly created subcategory as selected
+        setFormData(prev => ({ ...prev, sub_category: data.subcategory.name }));
+
+        // Close modal and reset
+        setShowNewSubcategoryModal(false);
+        setNewItemName('');
+
+        console.log('[Subcategory] Subcategory added successfully, modal should close now');
+
+        // Show success message
+        setTimeout(() => {
+          alert('✅ Subcategory "' + data.subcategory.name + '" added successfully!\n\nCheck the Sub-Category dropdown!');
+        }, 100);
+      } else {
+        console.error('[Subcategory] Failed to create subcategory:', data);
+        console.error('[Subcategory] Response status was:', response.status);
+
+        // Check for duplicate error
+        let errorMessage = data.error || '';
+
+        // If error message is empty, check if it's a 500 error (likely UNIQUE constraint)
+        if (!errorMessage && response.status === 500) {
+          errorMessage = 'UNIQUE constraint failed';
+        }
+
+        if (!errorMessage) {
+          errorMessage = 'Unknown error';
+        }
+
+        if (errorMessage.includes('UNIQUE constraint') || errorMessage.includes('already exists')) {
+          alert('❌ This subcategory already exists in this category!\n\nPlease use a different subcategory name or select the existing one from the dropdown.');
+        } else {
+          alert('❌ Failed to create subcategory: ' + errorMessage);
+        }
+      }
+    } catch (error) {
+      console.error('[Subcategory] Exception creating subcategory:', error);
+      alert('❌ Failed to create subcategory: ' + error.message);
+    } finally {
+      setIsCreatingSubcategory(false);
     }
   };
 
@@ -327,25 +514,6 @@ export default function NewProductPage() {
           <h1 className="text-lg font-bold text-neutral-900">Add Product</h1>
           <p className="text-[10px] text-neutral-500">Fields marked with * are required</p>
         </div>
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={handleCancel}
-            className="flex items-center gap-1 px-2 py-1 text-[10px] font-medium text-neutral-700 hover:bg-neutral-100 rounded-lg transition-colors"
-          >
-            <X className="w-3 h-3" />
-            Cancel
-          </button>
-          <button
-            type="submit"
-            form="product-form"
-            disabled={loading}
-            className="flex items-center gap-1 px-3 py-1 bg-black text-white text-[10px] font-medium rounded-lg hover:bg-neutral-800 transition-colors disabled:opacity-50"
-          >
-            <Upload className="w-3 h-3" />
-            {loading ? 'Saving...' : 'Save Product'}
-          </button>
-        </div>
       </div>
 
       <div className="flex-1 grid grid-cols-[1fr_280px] gap-3 min-h-0">
@@ -368,6 +536,7 @@ export default function NewProductPage() {
                 />
                 <button
                   type="button"
+                  onClick={handleBarcodeScanner}
                   className="p-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors"
                   title="Scan barcode"
                 >
@@ -442,15 +611,71 @@ export default function NewProductPage() {
                 <label className="block text-[10px] font-medium text-neutral-700 mb-1">
                   Sub-Category
                 </label>
-                <select
-                  name="sub_category"
-                  value={formData.sub_category}
-                  onChange={handleChange}
-                  className="w-full px-2 py-1 text-xs border border-neutral-200 rounded-md focus:outline-none focus:ring-1 focus:ring-black/5 bg-white"
-                  disabled={!formData.category}
-                >
-                  <option value="">Select Category first</option>
-                </select>
+                <div className="flex gap-1.5">
+                  {!selectedSubcategoryParent ? (
+                    <select
+                      value={selectedSubcategoryParent}
+                      onChange={(e) => {
+                        setSelectedSubcategoryParent(e.target.value);
+                        if (e.target.value) {
+                          fetchSubcategories(e.target.value);
+                        }
+                        setFormData(prev => ({ ...prev, sub_category: '' }));
+                      }}
+                      className="flex-1 px-2 py-1 text-xs border border-neutral-200 rounded-md focus:outline-none focus:ring-1 focus:ring-black/5 bg-white"
+                    >
+                      <option value="">Select Category first</option>
+                      {categories.map(cat => (
+                        <option key={cat.id} value={cat.name}>{cat.name}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <div className="flex-1 flex gap-1.5">
+                      <select
+                        name="sub_category"
+                        value={formData.sub_category}
+                        onChange={handleChange}
+                        className="flex-1 px-2 py-1 text-xs border border-neutral-200 rounded-md focus:outline-none focus:ring-1 focus:ring-black/5 bg-white"
+                      >
+                        <option value="">Select Sub-Category</option>
+                        {subcategories.map(subcat => (
+                          <option key={subcat.id} value={subcat.name}>{subcat.name}</option>
+                        ))}
+                      </select>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedSubcategoryParent('');
+                          setFormData(prev => ({ ...prev, sub_category: '' }));
+                        }}
+                        className="px-2 py-1 text-[10px] bg-neutral-100 text-neutral-600 rounded-md hover:bg-neutral-200 transition-colors"
+                        title="Change category"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!selectedSubcategoryParent) {
+                        alert('Please select a category first');
+                        return;
+                      }
+                      setShowNewSubcategoryModal(true);
+                    }}
+                    className="p-1.5 bg-emerald-50 text-emerald-600 rounded-md hover:bg-emerald-100 transition-colors disabled:opacity-50"
+                    title="Add new subcategory"
+                    disabled={!selectedSubcategoryParent}
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+                {selectedSubcategoryParent && (
+                  <p className="text-[10px] text-neutral-500 mt-1">
+                    Category: <span className="font-medium text-blue-600">{selectedSubcategoryParent}</span>
+                  </p>
+                )}
               </div>
             </div>
 
@@ -530,84 +755,139 @@ export default function NewProductPage() {
                 </button>
               </div>
             </div>
+
+            {/* Product Image */}
+            <div>
+              <label className="block text-[10px] font-medium text-neutral-700 mb-1">
+                PRODUCT IMAGE
+              </label>
+              <div
+                className="border-2 border-dashed border-neutral-200 rounded-md p-4 flex flex-col items-center justify-center cursor-pointer hover:border-neutral-300 transition-colors"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                {imagePreview ? (
+                  <img
+                    src={imagePreview}
+                    alt="Product preview"
+                    className="w-full h-24 object-contain mb-2"
+                  />
+                ) : (
+                  <>
+                    <div className="w-12 h-12 bg-neutral-100 rounded-md flex items-center justify-center mb-2">
+                      <Upload className="w-6 h-6 text-neutral-400" />
+                    </div>
+                    <p className="text-[10px] font-medium text-neutral-600 mb-0.5">Click to upload</p>
+                    <p className="text-[9px] text-neutral-400">PNG, JPG up to 5MB</p>
+                  </>
+                )}
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="hidden"
+              />
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="w-full mt-2 py-1 text-[10px] font-medium text-neutral-700 bg-neutral-50 hover:bg-neutral-100 rounded-md transition-colors flex items-center justify-center gap-1"
+              >
+                <Upload className="w-3 h-3" />
+                {imagePreview ? 'Change Image' : 'Browse Files'}
+              </button>
+
+              {/* Action Buttons */}
+              <div className="flex items-center gap-2 mt-3">
+                <button
+                  type="button"
+                  onClick={handleCancel}
+                  className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2.5 text-xs font-semibold text-neutral-700 bg-white border-2 border-neutral-300 hover:bg-neutral-50 hover:border-neutral-400 rounded-lg transition-all shadow-sm"
+                >
+                  <X className="w-3.5 h-3.5" />
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  form="product-form"
+                  disabled={loading}
+                  className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2.5 bg-black text-white text-xs font-semibold rounded-lg hover:bg-neutral-800 transition-all disabled:opacity-50 shadow-md hover:shadow-lg"
+                >
+                  <Upload className="w-3.5 h-3.5" />
+                  {loading ? 'Saving...' : 'Save Product'}
+                </button>
+              </div>
+            </div>
           </form>
         </div>
 
-        {/* Right Column - Image Upload & Summary */}
+        {/* Right Column - Summary */}
         <div className="flex flex-col gap-3 overflow-y-auto">
-          {/* Product Image */}
-          <div className="bg-white rounded-lg border border-neutral-200 p-2 shrink-0">
-            <h3 className="text-[10px] font-semibold text-neutral-700 uppercase tracking-wide mb-2">
-              PRODUCT IMAGE
-            </h3>
-            <div
-              className="border-2 border-dashed border-neutral-200 rounded-md p-4 flex flex-col items-center justify-center cursor-pointer hover:border-neutral-300 transition-colors"
-              onClick={() => fileInputRef.current?.click()}
-            >
-              {imagePreview ? (
-                <img
-                  src={imagePreview}
-                  alt="Product preview"
-                  className="w-full h-24 object-contain mb-2"
-                />
-              ) : (
-                <>
-                  <div className="w-12 h-12 bg-neutral-100 rounded-md flex items-center justify-center mb-2">
-                    <Upload className="w-6 h-6 text-neutral-400" />
-                  </div>
-                  <p className="text-[10px] font-medium text-neutral-600 mb-0.5">Click to upload</p>
-                  <p className="text-[9px] text-neutral-400">PNG, JPG up to 5MB</p>
-                </>
-              )}
-            </div>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={handleImageUpload}
-              className="hidden"
-            />
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="w-full mt-2 py-1 text-[10px] font-medium text-neutral-700 bg-neutral-50 hover:bg-neutral-100 rounded-md transition-colors flex items-center justify-center gap-1"
-            >
-              <Upload className="w-3 h-3" />
-              {imagePreview ? 'Change Image' : 'Browse Files'}
-            </button>
-          </div>
 
           {/* Summary */}
-          <div className="bg-blue-600 rounded-lg p-3 text-white shrink-0">
-            <h3 className="text-[10px] font-semibold uppercase tracking-wide mb-2">
-              SUMMARY
-            </h3>
-            <div className="space-y-1.5">
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-blue-100">Name:</span>
-                <span className="font-medium truncate ml-2" title={formData.name_english}>
-                  {formData.name_english || '--'}
-                </span>
+          <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl p-4 text-white shadow-lg">
+            <div className="flex items-center justify-between mb-4 pb-3 border-b border-blue-500/30">
+              <h3 className="text-xs font-bold uppercase tracking-wider">
+                Product Summary
+              </h3>
+              <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
               </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-blue-100">Category:</span>
-                <span className="font-medium">{formData.category || '--'}</span>
+            </div>
+
+            <div className="space-y-3">
+              <div className="bg-white/5 rounded-lg p-2.5 backdrop-blur-sm">
+                <div className="flex justify-between items-start">
+                  <span className="text-blue-100 text-[10px] font-medium">Product Name:</span>
+                  <span className="font-semibold text-xs text-right truncate ml-2 max-w-[140px]" title={formData.name_english}>
+                    {formData.name_english || '--'}
+                  </span>
+                </div>
               </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-blue-100">Brand:</span>
-                <span className="font-medium">{formData.brand || '--'}</span>
+
+              <div className="bg-white/5 rounded-lg p-2.5 backdrop-blur-sm">
+                <div className="flex justify-between items-center">
+                  <span className="text-blue-100 text-[10px] font-medium">Category:</span>
+                  <span className="font-semibold text-xs">{formData.category || '--'}</span>
+                </div>
               </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-blue-100">Unit:</span>
-                <span className="font-medium">{formData.unit || '--'}</span>
+
+              {formData.sub_category && (
+                <div className="bg-white/5 rounded-lg p-2.5 backdrop-blur-sm">
+                  <div className="flex justify-between items-center">
+                    <span className="text-blue-100 text-[10px] font-medium">Sub-Category:</span>
+                    <span className="font-semibold text-xs">{formData.sub_category}</span>
+                  </div>
+                </div>
+              )}
+
+              <div className="bg-white/5 rounded-lg p-2.5 backdrop-blur-sm">
+                <div className="flex justify-between items-center">
+                  <span className="text-blue-100 text-[10px] font-medium">Brand:</span>
+                  <span className="font-semibold text-xs">{formData.brand || '--'}</span>
+                </div>
               </div>
-              <div className="flex justify-between items-center text-xs pt-1.5 border-t border-blue-500">
-                <span className="text-blue-100">Status:</span>
-                <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${
-                  formData.status === 'Active' ? 'bg-emerald-500' : 'bg-neutral-400'
-                }`}>
-                  {formData.status}
-                </span>
+
+              <div className="bg-white/5 rounded-lg p-2.5 backdrop-blur-sm">
+                <div className="flex justify-between items-center">
+                  <span className="text-blue-100 text-[10px] font-medium">Unit:</span>
+                  <span className="font-semibold text-xs">{formData.unit || '--'}</span>
+                </div>
+              </div>
+
+              <div className="bg-white/10 rounded-lg p-2.5 backdrop-blur-sm mt-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-white text-[10px] font-semibold">Status:</span>
+                  <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold shadow-sm ${
+                    formData.status === 'Active'
+                      ? 'bg-emerald-500 text-white'
+                      : 'bg-neutral-400 text-white'
+                  }`}>
+                    {formData.status}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -659,9 +939,76 @@ export default function NewProductPage() {
                 <button
                   type="button"
                   onClick={handleCreateCategory}
-                  className="px-3 py-1.5 bg-emerald-600 text-white text-xs font-medium rounded-md hover:bg-emerald-700 transition-colors"
+                  disabled={isCreatingCategory}
+                  className="px-3 py-1.5 bg-emerald-600 text-white text-xs font-medium rounded-md hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >
-                  Add Category
+                  {isCreatingCategory && (
+                    <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  )}
+                  {isCreatingCategory ? 'Adding...' : 'Add Category'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Subcategory Modal */}
+      {showNewSubcategoryModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={(e) => {
+          if (e.target === e.currentTarget) {
+            setShowNewSubcategoryModal(false);
+            setNewItemName('');
+          }
+        }}>
+          <div className="bg-white rounded-lg p-4 w-80 shadow-xl">
+            <h3 className="text-sm font-semibold text-neutral-900 mb-3">Add New Subcategory</h3>
+            <div className="space-y-3">
+              <div>
+                <label className="block text-[10px] font-medium text-neutral-700 mb-1">
+                  Category: <span className="font-semibold text-blue-600">{selectedSubcategoryParent}</span>
+                </label>
+              </div>
+              <div>
+                <label className="block text-[10px] font-medium text-neutral-700 mb-1">
+                  Subcategory Name *
+                </label>
+                <input
+                  type="text"
+                  value={newItemName}
+                  onChange={(e) => setNewItemName(e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      handleCreateSubcategory();
+                    }
+                  }}
+                  placeholder="Enter subcategory name"
+                  className="w-full px-2 py-1.5 text-xs border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  autoFocus
+                />
+              </div>
+              <div className="flex gap-2 justify-end">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowNewSubcategoryModal(false);
+                    setNewItemName('');
+                  }}
+                  className="px-3 py-1.5 text-xs font-medium text-neutral-700 hover:bg-neutral-100 rounded-md transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCreateSubcategory}
+                  disabled={isCreatingSubcategory}
+                  className="px-3 py-1.5 bg-emerald-600 text-white text-xs font-medium rounded-md hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                >
+                  {isCreatingSubcategory && (
+                    <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  )}
+                  {isCreatingSubcategory ? 'Adding...' : 'Add Subcategory'}
                 </button>
               </div>
             </div>
@@ -713,9 +1060,69 @@ export default function NewProductPage() {
                 <button
                   type="button"
                   onClick={handleCreateBrand}
-                  className="px-3 py-1.5 bg-emerald-600 text-white text-xs font-medium rounded-md hover:bg-emerald-700 transition-colors"
+                  disabled={isCreatingBrand}
+                  className="px-3 py-1.5 bg-emerald-600 text-white text-xs font-medium rounded-md hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >
-                  Add Brand
+                  {isCreatingBrand && (
+                    <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  )}
+                  {isCreatingBrand ? 'Adding...' : 'Add Brand'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Barcode Scanner Modal */}
+      {showBarcodeScanner && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={(e) => {
+          if (e.target === e.currentTarget) {
+            setShowBarcodeScanner(false);
+          }
+        }}>
+          <div className="bg-white rounded-lg p-6 w-96 shadow-xl">
+            <h3 className="text-base font-semibold text-neutral-900 mb-4">Scan Barcode</h3>
+            <div className="space-y-4">
+              <div className="flex items-center justify-center p-8 bg-blue-50 rounded-lg">
+                <Scan className="w-16 h-16 text-blue-600" />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-neutral-700 mb-2">
+                  Enter or Scan Barcode
+                </label>
+                <input
+                  ref={barcodeInputRef}
+                  type="text"
+                  value={formData.barcode}
+                  onChange={(e) => setFormData(prev => ({ ...prev, barcode: e.target.value }))}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      setShowBarcodeScanner(false);
+                    }
+                  }}
+                  placeholder="Use scanner or type barcode"
+                  className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <p className="text-xs text-neutral-500 mt-2">
+                  Use a barcode scanner to automatically enter the barcode, or type it manually.
+                </p>
+              </div>
+              <div className="flex gap-2 justify-end">
+                <button
+                  type="button"
+                  onClick={() => setShowBarcodeScanner(false)}
+                  className="px-4 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-100 rounded-md transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowBarcodeScanner(false)}
+                  className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors"
+                >
+                  Done
                 </button>
               </div>
             </div>

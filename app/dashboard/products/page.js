@@ -66,18 +66,18 @@ export default function ProductsListPage() {
   const categories = [...new Set(products.map(p => p.category).filter(Boolean))];
 
   return (
-    <div className="space-y-4">
+    <div className="p-3 space-y-3">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900">Products List</h1>
-          <p className="text-sm text-neutral-500 mt-0.5">
+          <h1 className="text-xl font-bold text-neutral-900">Products List</h1>
+          <p className="text-xs text-neutral-500 mt-0.5">
             Total {filteredProducts.length} products
           </p>
         </div>
         <button
           onClick={() => router.push('/dashboard/new-product')}
-          className="flex items-center gap-2 px-4 py-2 bg-black text-white text-sm font-medium rounded-lg hover:bg-neutral-800 transition-colors"
+          className="flex items-center gap-2 px-4 py-2.5 bg-black text-white text-xs font-semibold rounded-lg hover:bg-neutral-800 transition-all shadow-md hover:shadow-lg"
         >
           <Plus className="w-4 h-4" />
           Add New Product
@@ -85,10 +85,11 @@ export default function ProductsListPage() {
       </div>
 
       {/* Filters and Search */}
-      <div className="bg-white rounded-xl border border-neutral-200 p-4">
+      <div className="bg-white rounded-lg border border-neutral-200 p-4 shadow-sm">
         <div className="grid grid-cols-4 gap-3">
           {/* Search */}
           <div className="col-span-2">
+            <label className="block text-[10px] font-medium text-neutral-700 mb-1.5">Search Products</label>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
               <input
@@ -96,17 +97,18 @@ export default function ProductsListPage() {
                 placeholder="Search by name, SKU, or barcode..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 text-sm border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/5"
+                className="w-full pl-10 pr-3 py-2 text-xs border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-black transition-all"
               />
             </div>
           </div>
 
           {/* Category Filter */}
           <div>
+            <label className="block text-[10px] font-medium text-neutral-700 mb-1.5">Category</label>
             <select
               value={filterCategory}
               onChange={(e) => setFilterCategory(e.target.value)}
-              className="w-full px-3 py-2 text-sm border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/5 bg-white"
+              className="w-full px-3 py-2 text-xs border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-black bg-white transition-all"
             >
               <option value="">All Categories</option>
               {categories.map(cat => (
@@ -117,10 +119,11 @@ export default function ProductsListPage() {
 
           {/* Status Filter */}
           <div>
+            <label className="block text-[10px] font-medium text-neutral-700 mb-1.5">Status</label>
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="w-full px-3 py-2 text-sm border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/5 bg-white"
+              className="w-full px-3 py-2 text-xs border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-black bg-white transition-all"
             >
               <option value="">All Status</option>
               <option value="Active">Active</option>
@@ -131,110 +134,123 @@ export default function ProductsListPage() {
       </div>
 
       {/* Products Table */}
-      <div className="bg-white rounded-xl border border-neutral-200 overflow-hidden">
+      <div className="bg-white rounded-lg border border-neutral-200 overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-neutral-50 border-b border-neutral-200">
+          <table className="w-full text-xs">
+            <thead className="bg-gradient-to-r from-neutral-50 to-neutral-100 border-b-2 border-neutral-200">
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-600 uppercase tracking-wide">
+                <th className="px-4 py-3 text-left text-[10px] font-bold text-neutral-700 uppercase tracking-wide">
                   SKU
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-600 uppercase tracking-wide">
+                <th className="px-4 py-3 text-left text-[10px] font-bold text-neutral-700 uppercase tracking-wide">
                   Product Name
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-600 uppercase tracking-wide">
+                <th className="px-4 py-3 text-left text-[10px] font-bold text-neutral-700 uppercase tracking-wide">
                   Category
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-600 uppercase tracking-wide">
+                <th className="px-4 py-3 text-left text-[10px] font-bold text-neutral-700 uppercase tracking-wide">
                   Brand
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-600 uppercase tracking-wide">
+                <th className="px-4 py-3 text-left text-[10px] font-bold text-neutral-700 uppercase tracking-wide">
                   Unit
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-600 uppercase tracking-wide">
+                <th className="px-4 py-3 text-left text-[10px] font-bold text-neutral-700 uppercase tracking-wide">
                   Stock
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-600 uppercase tracking-wide">
+                <th className="px-4 py-3 text-left text-[10px] font-bold text-neutral-700 uppercase tracking-wide">
                   Price
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-600 uppercase tracking-wide">
+                <th className="px-4 py-3 text-left text-[10px] font-bold text-neutral-700 uppercase tracking-wide">
                   Status
                 </th>
-                <th className="px-4 py-3 text-center text-xs font-semibold text-neutral-600 uppercase tracking-wide">
+                <th className="px-4 py-3 text-center text-[10px] font-bold text-neutral-700 uppercase tracking-wide">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-neutral-200">
+            <tbody className="divide-y divide-neutral-100">
               {loading ? (
                 <tr>
-                  <td colSpan="9" className="px-4 py-8 text-center text-sm text-neutral-500">
-                    Loading products...
+                  <td colSpan="9" className="px-4 py-12 text-center text-sm text-neutral-500">
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="w-8 h-8 border-3 border-neutral-300 border-t-black rounded-full animate-spin"></div>
+                      <p>Loading products...</p>
+                    </div>
                   </td>
                 </tr>
               ) : filteredProducts.length === 0 ? (
                 <tr>
-                  <td colSpan="9" className="px-4 py-8 text-center text-sm text-neutral-500">
+                  <td colSpan="9" className="px-4 py-12 text-center text-sm text-neutral-500">
                     No products found
                   </td>
                 </tr>
               ) : (
                 filteredProducts.map((product) => (
-                  <tr key={product.id} className="hover:bg-neutral-50 transition-colors">
-                    <td className="px-4 py-3 text-sm font-medium text-neutral-900">
+                  <tr key={product.id} className="hover:bg-neutral-50/50 transition-colors group">
+                    <td className="px-4 py-3 font-semibold text-neutral-900">
                       {product.sku || '--'}
                     </td>
                     <td className="px-4 py-3">
                       <div>
-                        <p className="text-sm font-medium text-neutral-900">{product.name_english}</p>
+                        <p className="font-semibold text-neutral-900">{product.name_english}</p>
                         {product.name_urdu && (
-                          <p className="text-xs text-neutral-500 mt-0.5" dir="rtl">{product.name_urdu}</p>
+                          <p className="text-[10px] text-neutral-500 mt-0.5" dir="rtl">{product.name_urdu}</p>
                         )}
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-sm text-neutral-600">
-                      {product.category || '--'}
+                    <td className="px-4 py-3 text-neutral-600">
+                      <span className="px-2 py-1 bg-neutral-100 rounded text-[10px] font-medium">
+                        {product.category || '--'}
+                      </span>
                     </td>
-                    <td className="px-4 py-3 text-sm text-neutral-600">
+                    <td className="px-4 py-3 text-neutral-600">
                       {product.brand || '--'}
                     </td>
-                    <td className="px-4 py-3 text-sm text-neutral-600">
+                    <td className="px-4 py-3 text-neutral-600">
                       {product.unit || '--'}
                     </td>
-                    <td className="px-4 py-3 text-sm font-medium text-neutral-900">
-                      {product.stock || 0}
+                    <td className="px-4 py-3 font-semibold text-neutral-900">
+                      <span className={`${
+                        (product.stock || 0) <= 0
+                          ? 'text-red-600'
+                          : (product.stock || 0) < 10
+                            ? 'text-amber-600'
+                            : 'text-neutral-900'
+                      }`}>
+                        {product.stock || 0}
+                      </span>
                     </td>
-                    <td className="px-4 py-3 text-sm font-medium text-neutral-900">
+                    <td className="px-4 py-3 font-semibold text-neutral-900">
                       Rs {product.price || 0}
                     </td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                      <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-bold border ${
                         product.status === 'Active'
-                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                          : 'bg-neutral-100 text-neutral-600 border border-neutral-200'
+                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                          : 'bg-neutral-100 text-neutral-600 border-neutral-200'
                       }`}>
                         {product.status || 'Active'}
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      <div className="flex items-center justify-center gap-1">
+                      <div className="flex items-center justify-center gap-1.5">
                         <button
                           onClick={() => router.push(`/dashboard/products/${product.id}`)}
-                          className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-md transition-all hover:shadow-sm"
                           title="View"
                         >
                           <Eye className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => router.push(`/dashboard/products/${product.id}/edit`)}
-                          className="p-1.5 text-neutral-600 hover:bg-neutral-100 rounded-lg transition-colors"
+                          className="p-1.5 text-neutral-600 hover:bg-neutral-100 rounded-md transition-all hover:shadow-sm"
                           title="Edit"
                         >
                           <Edit className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleDelete(product.id)}
-                          className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          className="p-1.5 text-red-600 hover:bg-red-50 rounded-md transition-all hover:shadow-sm"
                           title="Delete"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -251,27 +267,27 @@ export default function ProductsListPage() {
 
       {/* Summary Footer */}
       {!loading && filteredProducts.length > 0 && (
-        <div className="bg-white rounded-xl border border-neutral-200 p-4">
+        <div className="bg-white rounded-lg border border-neutral-200 p-4 shadow-sm">
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center">
-              <p className="text-xs text-neutral-500 mb-1">Total Products</p>
-              <p className="text-lg font-semibold text-neutral-900">{filteredProducts.length}</p>
+            <div className="text-center p-3 rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200">
+              <p className="text-[10px] font-medium text-blue-700 mb-1 uppercase tracking-wide">Total Products</p>
+              <p className="text-2xl font-bold text-blue-900">{filteredProducts.length}</p>
             </div>
-            <div className="text-center">
-              <p className="text-xs text-neutral-500 mb-1">Active Products</p>
-              <p className="text-lg font-semibold text-emerald-600">
+            <div className="text-center p-3 rounded-lg bg-gradient-to-br from-emerald-50 to-emerald-100 border border-emerald-200">
+              <p className="text-[10px] font-medium text-emerald-700 mb-1 uppercase tracking-wide">Active Products</p>
+              <p className="text-2xl font-bold text-emerald-900">
                 {filteredProducts.filter(p => p.status === 'Active').length}
               </p>
             </div>
-            <div className="text-center">
-              <p className="text-xs text-neutral-500 mb-1">Out of Stock</p>
-              <p className="text-lg font-semibold text-red-600">
+            <div className="text-center p-3 rounded-lg bg-gradient-to-br from-red-50 to-red-100 border border-red-200">
+              <p className="text-[10px] font-medium text-red-700 mb-1 uppercase tracking-wide">Out of Stock</p>
+              <p className="text-2xl font-bold text-red-900">
                 {filteredProducts.filter(p => p.stock === 0 || p.stock < 0).length}
               </p>
             </div>
-            <div className="text-center">
-              <p className="text-xs text-neutral-500 mb-1">Total Value</p>
-              <p className="text-lg font-semibold text-neutral-900">
+            <div className="text-center p-3 rounded-lg bg-gradient-to-br from-amber-50 to-amber-100 border border-amber-200">
+              <p className="text-[10px] font-medium text-amber-700 mb-1 uppercase tracking-wide">Total Value</p>
+              <p className="text-2xl font-bold text-amber-900">
                 Rs {filteredProducts.reduce((sum, p) => sum + (p.price * p.stock || 0), 0).toLocaleString()}
               </p>
             </div>

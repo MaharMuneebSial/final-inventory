@@ -20,7 +20,7 @@ export default function DashboardLayout({ children }) {
     <div className="min-h-screen bg-neutral-50">
       <Topbar />
       <Sidebar />
-      <main className="ml-52 mt-10 p-8">
+      <main className="ml-52 mt-7 p-0">
         {children}
       </main>
     </div>

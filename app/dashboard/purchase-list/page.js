@@ -140,68 +140,68 @@ export default function PurchaseListPage() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="p-3 space-y-3">
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-4 text-white shadow-lg">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+        <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-4 text-white shadow-lg">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-blue-100 text-xs font-medium">Total Purchases</p>
+              <p className="text-blue-100 text-[10px] font-medium uppercase tracking-wide">Total Purchases</p>
               <p className="text-2xl font-bold mt-1">{totalPurchases}</p>
             </div>
             <div className="bg-white/20 p-2 rounded-lg">
-              <ShoppingCart className="w-6 h-6" />
+              <ShoppingCart className="w-5 h-5" />
             </div>
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-4 text-white shadow-lg">
+        <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-lg p-4 text-white shadow-lg">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-green-100 text-xs font-medium">Total Amount</p>
+              <p className="text-green-100 text-[10px] font-medium uppercase tracking-wide">Total Amount</p>
               <p className="text-2xl font-bold mt-1">Rs. {totalAmount.toFixed(2)}</p>
             </div>
             <div className="bg-white/20 p-2 rounded-lg">
-              <DollarSign className="w-6 h-6" />
+              <DollarSign className="w-5 h-5" />
             </div>
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-4 text-white shadow-lg">
+        <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg p-4 text-white shadow-lg">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-purple-100 text-xs font-medium">Total Items</p>
+              <p className="text-purple-100 text-[10px] font-medium uppercase tracking-wide">Total Items</p>
               <p className="text-2xl font-bold mt-1">{totalItems}</p>
             </div>
             <div className="bg-white/20 p-2 rounded-lg">
-              <Package className="w-6 h-6" />
+              <Package className="w-5 h-5" />
             </div>
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-red-500 to-red-600 rounded-xl p-4 text-white shadow-lg">
+        <div className="bg-gradient-to-br from-red-500 to-red-600 rounded-lg p-4 text-white shadow-lg">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-red-100 text-xs font-medium">Total Due</p>
+              <p className="text-red-100 text-[10px] font-medium uppercase tracking-wide">Total Due</p>
               <p className="text-2xl font-bold mt-1">Rs. {totalDue.toFixed(2)}</p>
             </div>
             <div className="bg-white/20 p-2 rounded-lg">
-              <TrendingUp className="w-6 h-6" />
+              <TrendingUp className="w-5 h-5" />
             </div>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-neutral-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.04)] p-6">
+      <div className="bg-white rounded-lg border border-neutral-200 p-4 shadow-sm">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
           <div>
-            <h1 className="text-xl font-semibold tracking-tight text-neutral-900">Purchase List</h1>
-            <p className="text-neutral-500 text-sm mt-1">View and manage all purchase invoices</p>
+            <h1 className="text-xl font-bold text-neutral-900">Purchase List</h1>
+            <p className="text-xs text-neutral-500 mt-0.5">View and manage all purchase invoices</p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-col sm:flex-row gap-2">
             {/* Search */}
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
@@ -210,7 +210,7 @@ export default function PurchaseListPage() {
                 placeholder="Search by ID, Supplier or Received By..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-9 pr-4 py-2 text-sm border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full sm:w-64"
+                className="pl-10 pr-3 py-2 text-xs border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-black transition-all w-full sm:w-56"
               />
             </div>
 
@@ -218,7 +218,7 @@ export default function PurchaseListPage() {
             <select
               value={paymentStatusFilter}
               onChange={(e) => setPaymentStatusFilter(e.target.value)}
-              className="px-4 py-2 text-sm border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="px-3 py-2 text-xs border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-black bg-white transition-all"
             >
               <option value="all">All Status</option>
               <option value="Paid">Paid</option>
@@ -230,7 +230,7 @@ export default function PurchaseListPage() {
             <select
               value={dateFilter}
               onChange={(e) => setDateFilter(e.target.value)}
-              className="px-4 py-2 text-sm border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="px-3 py-2 text-xs border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-black bg-white transition-all"
             >
               <option value="all">All Time</option>
               <option value="today">Today</option>
@@ -241,93 +241,93 @@ export default function PurchaseListPage() {
         </div>
 
         {/* Table */}
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-neutral-200">
-                <th className="text-left py-3 px-4 text-xs font-semibold text-neutral-600 uppercase tracking-wider">Purchase ID</th>
-                <th className="text-left py-3 px-4 text-xs font-semibold text-neutral-600 uppercase tracking-wider">Date</th>
-                <th className="text-left py-3 px-4 text-xs font-semibold text-neutral-600 uppercase tracking-wider">Supplier</th>
-                <th className="text-left py-3 px-4 text-xs font-semibold text-neutral-600 uppercase tracking-wider">Items</th>
-                <th className="text-left py-3 px-4 text-xs font-semibold text-neutral-600 uppercase tracking-wider">Items Summary</th>
-                <th className="text-right py-3 px-4 text-xs font-semibold text-neutral-600 uppercase tracking-wider">Subtotal</th>
-                <th className="text-right py-3 px-4 text-xs font-semibold text-neutral-600 uppercase tracking-wider">Total</th>
-                <th className="text-right py-3 px-4 text-xs font-semibold text-neutral-600 uppercase tracking-wider">Paid</th>
-                <th className="text-right py-3 px-4 text-xs font-semibold text-neutral-600 uppercase tracking-wider">Due</th>
-                <th className="text-left py-3 px-4 text-xs font-semibold text-neutral-600 uppercase tracking-wider">Status</th>
-                <th className="text-left py-3 px-4 text-xs font-semibold text-neutral-600 uppercase tracking-wider">Received By</th>
-                <th className="text-center py-3 px-4 text-xs font-semibold text-neutral-600 uppercase tracking-wider">Actions</th>
+        <div className="overflow-x-auto rounded-lg border border-neutral-200">
+          <table className="w-full text-xs">
+            <thead className="bg-gradient-to-r from-neutral-50 to-neutral-100 border-b-2 border-neutral-200">
+              <tr>
+                <th className="text-left py-3 px-4 text-[10px] font-bold text-neutral-700 uppercase tracking-wide">Purchase ID</th>
+                <th className="text-left py-3 px-4 text-[10px] font-bold text-neutral-700 uppercase tracking-wide">Date</th>
+                <th className="text-left py-3 px-4 text-[10px] font-bold text-neutral-700 uppercase tracking-wide">Supplier</th>
+                <th className="text-left py-3 px-4 text-[10px] font-bold text-neutral-700 uppercase tracking-wide">Items</th>
+                <th className="text-left py-3 px-4 text-[10px] font-bold text-neutral-700 uppercase tracking-wide">Items Summary</th>
+                <th className="text-right py-3 px-4 text-[10px] font-bold text-neutral-700 uppercase tracking-wide">Subtotal</th>
+                <th className="text-right py-3 px-4 text-[10px] font-bold text-neutral-700 uppercase tracking-wide">Total</th>
+                <th className="text-right py-3 px-4 text-[10px] font-bold text-neutral-700 uppercase tracking-wide">Paid</th>
+                <th className="text-right py-3 px-4 text-[10px] font-bold text-neutral-700 uppercase tracking-wide">Due</th>
+                <th className="text-left py-3 px-4 text-[10px] font-bold text-neutral-700 uppercase tracking-wide">Status</th>
+                <th className="text-left py-3 px-4 text-[10px] font-bold text-neutral-700 uppercase tracking-wide">Received By</th>
+                <th className="text-center py-3 px-4 text-[10px] font-bold text-neutral-700 uppercase tracking-wide">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-neutral-100">
+            <tbody className="divide-y divide-neutral-100 bg-white">
               {filteredPurchases.length === 0 ? (
                 <tr>
-                  <td colSpan="12" className="text-center py-12 text-neutral-500">
+                  <td colSpan="12" className="text-center py-12 text-sm text-neutral-500">
                     No purchases found
                   </td>
                 </tr>
               ) : (
                 filteredPurchases.map((purchase) => (
-                  <tr key={purchase.purchase_id} className="hover:bg-neutral-50 transition-colors">
-                    <td className="py-3 px-4 text-sm font-medium text-neutral-900">
+                  <tr key={purchase.purchase_id} className="hover:bg-neutral-50/50 transition-colors group">
+                    <td className="py-3 px-4 font-semibold text-neutral-900">
                       {purchase.purchase_id}
                     </td>
-                    <td className="py-3 px-4 text-sm text-neutral-600">
+                    <td className="py-3 px-4 text-neutral-600 font-medium">
                       {purchase.purchase_date}
                     </td>
-                    <td className="py-3 px-4 text-sm text-neutral-900">
+                    <td className="py-3 px-4 text-neutral-900">
                       <div className="flex flex-col">
-                        <span className="font-medium">{purchase.supplier_name}</span>
+                        <span className="font-semibold">{purchase.supplier_name}</span>
                         {purchase.supplier_phone && (
-                          <span className="text-xs text-neutral-500">{purchase.supplier_phone}</span>
+                          <span className="text-[10px] text-neutral-500 mt-0.5">{purchase.supplier_phone}</span>
                         )}
                       </div>
                     </td>
-                    <td className="py-3 px-4 text-sm text-neutral-900 font-medium">
+                    <td className="py-3 px-4 text-neutral-900 font-semibold">
                       {purchase.total_items || purchase.items?.length || 0}
                     </td>
-                    <td className="py-3 px-4 text-sm text-neutral-600 max-w-xs truncate">
+                    <td className="py-3 px-4 text-neutral-600 max-w-xs truncate">
                       {getItemsSummary(purchase.items)}
                     </td>
-                    <td className="py-3 px-4 text-sm text-neutral-900 text-right font-medium">
+                    <td className="py-3 px-4 text-neutral-900 text-right font-semibold">
                       Rs. {(purchase.subtotal || 0).toFixed(2)}
                     </td>
-                    <td className="py-3 px-4 text-sm text-neutral-900 text-right font-semibold">
+                    <td className="py-3 px-4 text-neutral-900 text-right font-bold">
                       Rs. {(purchase.grand_total || 0).toFixed(2)}
                     </td>
-                    <td className="py-3 px-4 text-sm text-green-600 text-right font-medium">
+                    <td className="py-3 px-4 text-green-600 text-right font-bold">
                       Rs. {(purchase.amount_paid || 0).toFixed(2)}
                     </td>
-                    <td className="py-3 px-4 text-sm text-red-600 text-right font-medium">
+                    <td className="py-3 px-4 text-red-600 text-right font-bold">
                       Rs. {(purchase.balance_due || 0).toFixed(2)}
                     </td>
                     <td className="py-3 px-4">
-                      <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium border ${getPaymentStatusBadge(purchase.payment_status)}`}>
+                      <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-bold border ${getPaymentStatusBadge(purchase.payment_status)}`}>
                         {purchase.payment_status || 'N/A'}
                       </span>
                     </td>
-                    <td className="py-3 px-4 text-sm text-neutral-600">
+                    <td className="py-3 px-4 text-neutral-600">
                       {purchase.received_by || 'N/A'}
                     </td>
                     <td className="py-3 px-4">
-                      <div className="flex items-center justify-center gap-2">
+                      <div className="flex items-center justify-center gap-1.5">
                         <button
                           onClick={() => setSelectedPurchase(purchase)}
-                          className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-md transition-all hover:shadow-sm"
                           title="View Details"
                         >
                           <Eye className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => window.location.href = `/dashboard/purchase?edit=${purchase.purchase_id}`}
-                          className="p-1.5 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
+                          className="p-1.5 text-amber-600 hover:bg-amber-50 rounded-md transition-all hover:shadow-sm"
                           title="Edit"
                         >
                           <Edit className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => setShowDeleteModal(purchase)}
-                          className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          className="p-1.5 text-red-600 hover:bg-red-50 rounded-md transition-all hover:shadow-sm"
                           title="Delete"
                         >
                           <Trash2 className="w-4 h-4" />

@@ -163,97 +163,111 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="space-y-6">
-      {/* Header Section with Filters and Today's Sale */}
+    <div className="p-3 space-y-3">
+      {/* Header Section with Dashboard Title and Today's Sale */}
       <div className="flex items-center justify-between">
-        {/* Filters */}
-        <div className="flex items-center gap-1">
+        <div>
+          <h1 className="text-lg font-bold text-neutral-900">Dashboard</h1>
+          <p className="text-[10px] text-neutral-500 mt-0.5">Welcome back, System Administrator</p>
+        </div>
+
+        {/* Today's Sale Counter */}
+        <div className="bg-gradient-to-r from-emerald-50 to-emerald-100/50 border border-emerald-200 rounded-lg px-3 py-1.5 flex items-center gap-2 shadow-sm">
+          <TrendingUp className="w-4 h-4 text-emerald-600" />
+          <div className="flex flex-col">
+            <span className="text-[9px] font-semibold text-emerald-600 uppercase tracking-wide">Today's Sale</span>
+            <p className="text-xs font-bold text-emerald-700">
+              {loading ? 'Loading...' : formatCurrency(dashboardData.todaySale)}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Time Period Filters */}
+      <div className="bg-white rounded-lg border border-neutral-200 p-2 shadow-sm">
+        <div className="flex items-center gap-1.5">
+          <span className="text-[10px] font-bold text-neutral-700 uppercase tracking-wide mr-1">Period:</span>
           {filters.map((filter) => (
             <button
               key={filter}
               onClick={() => setActiveFilter(filter)}
-              className={`px-3.5 py-1.5 rounded-lg font-medium text-[11px] transition-all duration-150 ${
+              className={`px-3 py-1 rounded-md font-semibold text-[10px] transition-all ${
                 activeFilter === filter
-                  ? 'bg-black text-white'
-                  : 'bg-neutral-100 text-neutral-500 hover:bg-neutral-200'
+                  ? 'bg-neutral-900 text-white shadow-sm'
+                  : 'bg-neutral-50 text-neutral-600 hover:bg-neutral-100 border border-neutral-200'
               }`}
             >
               {filter}
             </button>
           ))}
         </div>
+      </div>
 
-        {/* Today's Sale Counter */}
-        <div className="bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-1.5 flex items-center gap-1.5">
-          <TrendingUp className="w-3.5 h-3.5 text-emerald-600" />
-          <p className="text-xs font-semibold text-emerald-700">
-            <span className="text-[10px] font-medium text-emerald-600 mr-1">Today's Sale</span>
-            {loading ? 'Loading...' : formatCurrency(dashboardData.todaySale)}
-          </p>
+      {/* Quick Actions Section */}
+      <div className="bg-white rounded-lg border border-neutral-200 p-3 shadow-sm">
+        <h2 className="text-[10px] font-bold text-neutral-900 mb-2.5 pb-2 border-b border-neutral-200 uppercase tracking-wide">Quick Actions</h2>
+        <div className="grid grid-cols-8 gap-2">
+          {quickActions.map((action, index) => {
+            const Icon = action.icon;
+            return (
+              <button
+                key={index}
+                onClick={() => router.push(action.path)}
+                className="bg-gradient-to-b from-neutral-50 to-white rounded-lg border border-neutral-200 p-2.5 transition-all duration-150 hover:shadow-md hover:border-neutral-300 hover:-translate-y-0.5 flex flex-col items-center gap-2 group"
+              >
+                <div className="bg-neutral-900 p-2.5 rounded-lg group-hover:bg-neutral-800 transition-all shadow-sm">
+                  <Icon className="w-4 h-4 text-white" />
+                </div>
+                <p className="text-[9px] font-semibold text-neutral-600 text-center leading-tight group-hover:text-neutral-900">
+                  {action.label}
+                </p>
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      {/* Dashboard Header */}
-      <div className="mb-4">
-        <h1 className="text-3xl font-bold text-neutral-900 mb-1">Dashboard</h1>
-        <p className="text-sm text-neutral-400">Welcome back, System Administrator</p>
-      </div>
-
-      {/* Quick Action Buttons */}
-      <div className="grid grid-cols-8 gap-2.5">
-        {quickActions.map((action, index) => {
-          const Icon = action.icon;
-          return (
-            <button
-              key={index}
-              onClick={() => router.push(action.path)}
-              className="bg-white rounded-2xl border border-neutral-100 p-3 transition-all duration-150 hover:bg-neutral-50 flex flex-col items-center gap-2 group"
-            >
-              <div className={`${action.bgColor} p-3 rounded-xl group-hover:bg-neutral-800 transition-colors duration-150`}>
-                <Icon className="w-4 h-4 text-white" />
-              </div>
-              <p className="text-[10px] font-medium text-neutral-500 text-center leading-tight">
-                {action.label}
-              </p>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Statistics Cards */}
-      <div className="grid grid-cols-3 gap-6">
-        {stats.map((stat, index) => {
-          const Icon = stat.icon;
-          return (
-            <div
-              key={index}
-              className="bg-white/80 backdrop-blur-xl rounded-2xl border border-neutral-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.04)] p-6 transition-all duration-300 hover:-translate-y-[1px] hover:shadow-[0_8px_28px_rgba(0,0,0,0.06)]"
-            >
-              <div className="flex items-start justify-between mb-4">
-                <div className={`${stat.bgColor} p-3 rounded-xl`}>
-                  <Icon className={`w-6 h-6 ${stat.iconColor}`} />
+      {/* Statistics Section */}
+      <div className="bg-white rounded-lg border border-neutral-200 p-3 shadow-sm">
+        <h2 className="text-[10px] font-bold text-neutral-900 mb-2.5 pb-2 border-b border-neutral-200 uppercase tracking-wide">Statistics Overview</h2>
+        <div className="grid grid-cols-3 gap-3">
+          {stats.map((stat, index) => {
+            const Icon = stat.icon;
+            return (
+              <div
+                key={index}
+                className="bg-gradient-to-br from-white to-neutral-50/50 rounded-lg border border-neutral-200 shadow-sm p-3 transition-all duration-200 hover:shadow-md hover:border-neutral-300 hover:-translate-y-0.5"
+              >
+                <div className="flex items-start justify-between mb-2.5">
+                  <div className={`${stat.bgColor} p-2 rounded-lg shadow-sm`}>
+                    <Icon className={`w-4 h-4 ${stat.iconColor}`} />
+                  </div>
+                  {stat.change && (
+                    <span
+                      className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
+                        stat.changeType === 'positive'
+                          ? 'bg-emerald-100 text-emerald-700'
+                          : 'bg-red-100 text-red-700'
+                      }`}
+                    >
+                      {stat.change}
+                    </span>
+                  )}
                 </div>
-                {stat.change && (
-                  <span
-                    className={`text-sm font-semibold ${
-                      stat.changeType === 'positive'
-                        ? 'text-emerald-600'
-                        : 'text-red-600'
-                    }`}
-                  >
-                    {stat.change}
-                  </span>
-                )}
+                <h3 className="text-[10px] text-neutral-500 font-semibold mb-1 uppercase tracking-wide">
+                  {stat.title}
+                </h3>
+                <p className="text-base font-bold text-neutral-900">
+                  {loading ? (
+                    <span className="text-neutral-400 text-sm">Loading...</span>
+                  ) : (
+                    stat.value
+                  )}
+                </p>
               </div>
-              <h3 className="text-sm text-neutral-500 font-medium mb-1">
-                {stat.title}
-              </h3>
-              <p className="text-2xl font-semibold text-neutral-900 tracking-tight">
-                {stat.value}
-              </p>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     </div>
   );
